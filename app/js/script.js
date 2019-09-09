@@ -1,4 +1,18 @@
+let url;
+
 $(document).ready(function(){
+    $.ajax({
+      url: 'config.json',
+      type: 'GET',
+      dataType: 'json',
+      success:function(keys){
+        url = `${keys['SERVER_URL']}:${keys['SERVER_PORT']}`;
+      },
+      error: function(){
+        console.log('cannot find config.json file, cannot run application');
+      }
+    });
+
     $('#customFile').change(function(e){
         const fileName = e.target.files[0].name;
         $('.custom-file-label').text(fileName);
@@ -13,9 +27,8 @@ $(document).ready(function(){
 
     $('#imageUploader').submit(function(){
         event.preventDefault();
-
         $.ajax({
-            url: 'http://localhost:3000/upload',
+            url: `${url}/upload`,
             method: 'post',
             success:function(data){
                 console.log(data);
