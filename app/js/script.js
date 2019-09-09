@@ -31,6 +31,7 @@ $(document).ready(function(){
         let fd = new FormData();
         const file = $('#customFile')[0].files[0];
         fd.append('uploadedImage', file);
+        fd.append('message', 'Hello There');
 
         $.ajax({
             url: `${url}/upload`,
@@ -46,5 +47,5 @@ $(document).ready(function(){
             }
         })
     });
-    
+
 })
