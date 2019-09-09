@@ -27,9 +27,17 @@ $(document).ready(function(){
 
     $('#imageUploader').submit(function(){
         event.preventDefault();
+
+        let fd = new FormData();
+        const file = $('#customFile')[0].files[0];
+        fd.append('uploadedImage', file);
+
         $.ajax({
             url: `${url}/upload`,
             method: 'post',
+            data: fd,
+            contentType: false,
+            processData: false,
             success:function(data){
                 console.log(data);
             },
@@ -37,5 +45,6 @@ $(document).ready(function(){
                 console.log(err);
             }
         })
-    })
+    });
+    
 })
