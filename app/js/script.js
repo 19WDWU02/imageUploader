@@ -16,36 +16,46 @@ $(document).ready(function(){
     $('#customFile').change(function(e){
         const fileName = e.target.files[0].name;
         $('.custom-file-label').text(fileName);
-        $('.hiddenBtn').fadeIn();
+        $('.hidden').fadeIn();
     });
 
     $('#cancelBtn').click(function(){
-        $('.custom-file-label').text('Choose file');
-        $('#customFile').val('');
-        $('.hiddenBtn').fadeOut();
+        clearForm();
     })
 
     $('#imageUploader').submit(function(){
         event.preventDefault();
+        $('#imageTitle').removeClass('is-invalid').parent().find('.invalid-feedback').remove();
+        const imageTitle = $('#imageTitle').val();
 
-        let fd = new FormData();
-        const file = $('#customFile')[0].files[0];
-        fd.append('uploadedImage', file);
-        fd.append('message', 'Hello There');
+        if(imageTitle.length === 0){
+            $('#imageTitle').addClass('is-invalid').parent().append(`<div class="invalid-feedback">Please enter a title for the image.</div>`);
+        } else {
+            let fd = new FormData();
+            const file = $('#customFile')[0].files[0];
+            fd.append('uploadedImage', file);
 
-        $.ajax({
-            url: `${url}/upload`,
-            method: 'post',
-            data: fd,
-            contentType: false,
-            processData: false,
-            success:function(data){
-                console.log(data);
-            },
-            error: function(err){
-                console.log(err);
-            }
-        })
+            $.ajax({
+                url: `${url}/upload`,
+                method: 'post',
+                data: fd,
+                contentType: false,
+                processData: false,
+                success:function(data){
+                    console.log(data);
+                    clearForm();
+                },
+                error: function(err){
+                    console.log(err);
+                }
+            })
+        }
     });
 
+    clearForm = () => {
+        $('.custom-file-label').text('Choose file');
+        $('#customFile').val('');
+        $('.hidden').fadeOut();
+        $('#imageTitle').val('').removeClass('is-invalid').parent().find('.invalid-feedback').remove();
+    }
 })
