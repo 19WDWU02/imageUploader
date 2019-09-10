@@ -4,6 +4,17 @@ const port = 3000;
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
+const mongoose = require('mongoose');
+
+const config = require('./config.json');
+
+mongoose.connect(`mongodb+srv://${config.MONGO_USER}:${config.MONGO_PASSWORD}@${config.MONGO_CLUSTER_NAME}.mongodb.net/${config.MONGO_TABLE_NAME}?retryWrites=true&w=majority`, {useNewUrlParser: true});
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+    console.log('we are connected to mongo db');
+});
 
 // const upload = multer({dest: './uploads'});
 const storage = multer.diskStorage({
