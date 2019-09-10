@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 
 const config = require('./config.json');
 
-mongoose.connect(`mongodb+srv://${config.MONGO_USER}:${config.MONGO_PASSWORD}@${config.MONGO_CLUSTER_NAME}.mongodb.net/${config.MONGO_TABLE_NAME}?retryWrites=true&w=majority`, {useNewUrlParser: true});
+mongoose.connect(`mongodb+srv://${config.MONGO_USER}:${config.MONGO_PASSWORD}@${config.MONGO_CLUSTER_NAME}.mongodb.net/${config.MONGO_TABLE_NAME}?retryWrites=true&w=majority`, {useNewUrlParser: true, useUnifiedTopology: true});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -26,7 +26,19 @@ const storage = multer.diskStorage({
   }
 })
 
-const upload = multer({ storage: storage })
+const filterFile = (req, file, cb) => {
+    if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
+        cb(null, true);
+    } else {
+        req.validationError = 'invalid extension';
+        cb(null, false, req.validationError);
+    }
+}
+
+const upload = multer({
+    storage: storage,
+    fileFilter: filterFile
+})
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
@@ -42,8 +54,12 @@ app.get('/', function(req, res){
 });
 
 app.post('/upload', upload.single('uploadedImage'), function( req, res){
-    console.log(req.body);
-    res.send('Upload Image here');
+    if(req.validationError === 'invalid extension'){
+        res.send('invalid extension');
+    } else {
+        console.log(req.file);
+        res.send('Successfully Uploaded image');
+    }
 });
 
 app.listen(port, () => {
