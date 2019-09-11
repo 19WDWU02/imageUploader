@@ -46,6 +46,15 @@ app.post('/upload', upload.single('uploadedImage'), function( req, res){
     res.send('Upload Image here');
 });
 
+app.get('/allImages', function(req, res){
+    res.send('Get All Images');
+})
+
+app.delete('/:id', function(req, res){
+    const id = req.params.id;
+    res.send(id);
+})
+
 app.listen(port, () => {
     console.clear();
     console.log(`application is running on port ${port}`)

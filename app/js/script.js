@@ -7,11 +7,27 @@ $(document).ready(function(){
       dataType: 'json',
       success:function(keys){
         url = `${keys['SERVER_URL']}:${keys['SERVER_PORT']}`;
+        getImages();
       },
       error: function(){
         console.log('cannot find config.json file, cannot run application');
       }
     });
+
+    getImages = () => {
+        $.ajax({
+            url: `${url}/allImages`,
+            type: 'GET',
+            dataType: 'json',
+            success: function(images){
+                console.log(images);
+            },
+            error: function(err){
+                console.log(err);
+                console.log('error with getting all the images');
+            }
+        })
+    }
 
     $('#customFile').change(function(e){
         const fileName = e.target.files[0].name;
