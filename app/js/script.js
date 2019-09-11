@@ -18,7 +18,6 @@ $(document).ready(function(){
         $.ajax({
             url: `${url}/allImages`,
             type: 'GET',
-            dataType: 'json',
             success: function(images){
                 console.log(images);
             },
