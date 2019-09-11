@@ -19,7 +19,11 @@ $(document).ready(function(){
             url: `${url}/allImages`,
             type: 'GET',
             success: function(images){
-                console.log(images);
+                for (var i = 0; i < images.length; i++) {
+                    $('#allImages').append(`<div class="card">
+                            <img class="img-fluid" src="${url}/${images[i].imgUrl}" alt="${images[i].imgTitle}">
+                        </div>`)
+                }
             },
             error: function(err){
                 console.log(err);

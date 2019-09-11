@@ -8,6 +8,8 @@ const mongoose = require('mongoose');
 
 const config = require('./config.json');
 
+const Image = require('./models/images');
+
 mongoose.connect(`mongodb+srv://${config.MONGO_USER}:${config.MONGO_PASSWORD}@${config.MONGO_CLUSTER_NAME}.mongodb.net/${config.MONGO_TABLE_NAME}?retryWrites=true&w=majority`, {useNewUrlParser: true, useUnifiedTopology: true});
 
 const db = mongoose.connection;
@@ -44,6 +46,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(cors());
 
+// http://192.168.33.10:3000/uploads/1568236627479-img_lights.jpg
+
+app.use('/uploads', express.static('uploads'));
+
 app.use(function(req, res, next){
     console.log(`${req.method} request for ${req.url}`);
     next();
@@ -57,13 +63,25 @@ app.post('/upload', upload.single('uploadedImage'), function( req, res){
     if(req.validationError === 'invalid extension'){
         res.send('invalid extension');
     } else {
-        console.log(req.file);
-        res.send('Successfully Uploaded image');
+        // console.log(req.body.imageName);
+        // console.log(req.file.path);
+        const image = new Image({
+            _id: new mongoose.Types.ObjectId(),
+            imgTitle: req.body.imageName,
+            imgUrl: req.file.path
+        });
+
+        image.save().then(result => {
+            res.send(result);
+        }).catch(err => res.send(err));
+
     }
 });
 
 app.get('/allImages', function(req, res){
-    res.send('Get All Images');
+    Image.find().then(result => {
+        res.send(result);
+    })
 })
 
 app.delete('/:id', function(req, res){
