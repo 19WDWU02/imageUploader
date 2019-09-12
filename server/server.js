@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const multer = require('multer');
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 const config = require('./config.json');
 
@@ -84,10 +85,40 @@ app.get('/allImages', function(req, res){
     })
 })
 
+
+
+
+
 app.delete('/:id', function(req, res){
     const id = req.params.id;
-    res.send(id);
+    Image.findById(id, function(err, imageDetails){
+        if(err){
+            res.send('cannot find image to delete from mongo');
+        } else {
+            if(fs.existsSync(imageDetails.imgUrl)){
+                fs.unlink(imageDetails.imgUrl, (err) => {
+                    if(err){
+                        res.send('Cannot delete image from server');
+                    } else {
+                        Image.deleteOne({_id: id}, function(err){
+                            if(err){
+                                res.send('Cannot delete image from Mongo')
+                            } else {
+                                res.send('image was removed from Mongo');
+                            }
+                        })
+                    }
+                })
+            } else {
+                res.send('cannot find image to delete in the server');
+            }
+        }
+    });
 })
+
+
+
+
 
 app.listen(port, () => {
     console.clear();

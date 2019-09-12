@@ -15,6 +15,7 @@ $(document).ready(function(){
     });
 
     getImages = () => {
+        console.log(`${url}/allImages`);
         $.ajax({
             url: `${url}/allImages`,
             type: 'GET',
@@ -33,9 +34,12 @@ $(document).ready(function(){
     }
 
     $('#customFile').change(function(e){
-        const fileName = e.target.files[0].name;
-        $('.custom-file-label').text(fileName);
-        $('.hidden').fadeIn();
+        console.log(e.target.files.length);
+        if(e.target.files.length > 0){
+            const fileName = e.target.files[0].name;
+            $('.custom-file-label').text(fileName);
+            $('.hidden').fadeIn();
+        }
     });
 
     $('#cancelBtn').click(function(){
@@ -83,10 +87,12 @@ $(document).ready(function(){
 
     $(document).on('click', '.card', function(){
         const id = $(this).data('id');
+        const card = $(this);
         $.ajax({
             url: `${url}/${id}`,
             method: 'delete',
             success: function(result){
+                card.remove();
                 console.log(result);
             },
             error: function(err){
@@ -95,4 +101,5 @@ $(document).ready(function(){
             }
         })
     });
+
 });
