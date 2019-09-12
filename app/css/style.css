@@ -5,3 +5,8 @@ body,html {
 .hidden{
     display: none;
 }
+
+#allImages .card:hover{
+    opacity: 0.5;
+    cursor: pointer;
+}

@@ -20,7 +20,7 @@ $(document).ready(function(){
             type: 'GET',
             success: function(images){
                 for (var i = 0; i < images.length; i++) {
-                    $('#allImages').append(`<div class="card">
+                    $('#allImages').append(`<div class="card" data-id="${images[i]._id}">
                             <img class="img-fluid" src="${url}/${images[i].imgUrl}" alt="${images[i].imgTitle}">
                         </div>`)
                 }
@@ -62,7 +62,9 @@ $(document).ready(function(){
                 contentType: false,
                 processData: false,
                 success:function(data){
-                    console.log(data);
+                    $('#allImages').append(`<div class="card" data-id="${data._id}">
+                            <img class="img-fluid" src="${url}/${data.imgUrl}" alt="${images[i].imgTitle}">
+                        </div>`)
                     clearForm();
                 },
                 error: function(err){
@@ -78,4 +80,19 @@ $(document).ready(function(){
         $('.hidden').fadeOut();
         $('#imageTitle').val('').removeClass('is-invalid').parent().find('.invalid-feedback').remove();
     }
-})
+
+    $(document).on('click', '.card', function(){
+        const id = $(this).data('id');
+        $.ajax({
+            url: `${url}/${id}`,
+            method: 'delete',
+            success: function(result){
+                console.log(result);
+            },
+            error: function(err){
+                console.log(err);
+                console.log('something went wrong with deleteing the item');
+            }
+        })
+    });
+});
