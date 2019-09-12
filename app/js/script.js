@@ -63,7 +63,7 @@ $(document).ready(function(){
                 processData: false,
                 success:function(data){
                     $('#allImages').append(`<div class="card" data-id="${data._id}">
-                            <img class="img-fluid" src="${url}/${data.imgUrl}" alt="${images[i].imgTitle}">
+                            <img class="img-fluid" src="${url}/${data.imgUrl}" alt="${data.imgTitle}">
                         </div>`)
                     clearForm();
                 },
